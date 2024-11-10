@@ -74,11 +74,15 @@ export class AppController {
   }
 
   @Delete(':id')
-  deleteMovie() {
-    return {
-      id: 3,
-      name: '어벤져스',
-      character: ['아이언맨', '블랙위도우'],
-    };
+  deleteMovie(@Param('id') id: string) {
+    const movieIndex = this.movies.findIndex((m) => m.id === +id);
+
+    if (movieIndex === -1) {
+      throw new NotFoundException('존재하지 않는 ID의 영화입니다!');
+    }
+
+    this.movies.splice(movieIndex, 1);
+
+    return id;
   }
 }
