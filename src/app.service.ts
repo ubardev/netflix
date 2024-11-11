@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 export interface Movie {
   id: number;
@@ -20,11 +20,27 @@ export class AppService {
 
   private idCounter = 3;
 
+  /**
+   * getManyMovies
+   */
   getManyMovies(title?: string) {
     if (!title) {
       return this.movies;
     }
 
     return this.movies.filter((m) => m.title.startsWith(title));
+  }
+
+  /**
+   * getMovieById
+   */
+  getMovieById(id: number) {
+    const movie = this.movies.find((m) => m.id === +id);
+
+    if (!movie) {
+      throw new NotFoundException('존재하지 않는 ID 값의 영화입니다!');
+    }
+
+    return movie;
   }
 }
