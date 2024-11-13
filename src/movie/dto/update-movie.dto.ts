@@ -113,5 +113,5 @@ export class UpdateMovieDto {
   // @IsPasswordValid({
   //   message: '다른 메시지',
   // })
-  test: string;
+  // test: string;
 }
