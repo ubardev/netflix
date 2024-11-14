@@ -5,6 +5,7 @@ import { MovieModule } from './movie/movie.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
+import { Movie } from './movie/entity/movie.entity';
 
 @Module({
   imports: [
@@ -28,21 +29,11 @@ import * as Joi from 'joi';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [],
+        entities: [Movie],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
-    // TypeOrmModule.forRoot({
-    //   type: process.env.DB_TYPE as 'postgres',
-    //   host: process.env.DB_HOST,
-    //   port: Number(process.env.DB_PORT),
-    //   username: process.env.DB_USERNAME,
-    //   password: process.env.DB_PASSWORD,
-    //   database: process.env.DB_DATABASE,
-    //   entities: [],
-    //   synchronize: true,
-    // }),
     MovieModule,
   ],
   controllers: [AppController],
