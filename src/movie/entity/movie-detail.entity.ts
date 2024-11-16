@@ -9,6 +9,6 @@ export class MovieDetail {
   @Column()
   detail: string;
 
-  @OneToOne(() => Movie)
+  @OneToOne(() => Movie, (movie) => movie.detail)
   movie: Movie;
 }
