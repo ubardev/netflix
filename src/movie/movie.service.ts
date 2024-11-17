@@ -20,19 +20,19 @@ export class MovieService {
   findAll(title?: string) {
     // 나중에 title 필터 기능 추가하기
     if (!title) {
-      return this.movieRepository.find({ relations: ['detail'] });
+      return this.movieRepository.find({ relations: ['director'] });
     }
 
     return this.movieRepository.findAndCount({
       where: { title: Like(`%${title}%`) },
-      relations: ['detail'],
+      relations: ['director'],
     });
   }
 
   async findOne(id: number) {
     const movie = await this.movieRepository.findOne({
       where: { id },
-      relations: ['detail'],
+      relations: ['detail', 'director'],
     });
 
     if (!movie) {
