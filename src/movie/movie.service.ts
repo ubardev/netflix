@@ -23,19 +23,19 @@ export class MovieService {
   findAll(title?: string) {
     // 나중에 title 필터 기능 추가하기
     if (!title) {
-      return this.movieRepository.find({ relations: ['director'] });
+      return this.movieRepository.find({ relations: ['director', 'genres'] });
     }
 
     return this.movieRepository.findAndCount({
       where: { title: Like(`%${title}%`) },
-      relations: ['director'],
+      relations: ['director', 'genres'],
     });
   }
 
   async findOne(id: number) {
     const movie = await this.movieRepository.findOne({
       where: { id },
-      relations: ['detail', 'director'],
+      relations: ['detail', 'director', 'genres'],
     });
 
     if (!movie) {
@@ -86,7 +86,7 @@ export class MovieService {
       throw new NotFoundException('존재하지 않는 ID 값의 영화입니다!');
     }
 
-    const { detail, directorId, ...movieRest } = updateMovieDto;
+    const { detail, directorId, genreIds, ...movieRest } = updateMovieDto;
 
     let newDirector: Director;
 
@@ -100,6 +100,22 @@ export class MovieService {
       }
 
       newDirector = director;
+    }
+
+    let newGenres;
+
+    if (genreIds) {
+      const genres = await this.genreRepository.find({
+        where: { id: In(genreIds) },
+      });
+
+      if (genres.length !== updateMovieDto.genreIds.length) {
+        throw new NotFoundException(
+          `존재하지 않는 장르가 있습니다! 존재하는 ids -> ${genres.map((genre) => genre.id).join(', ')}`,
+        );
+      }
+
+      newGenres = genres;
     }
 
     const movieUpdateFields = {
@@ -121,7 +137,14 @@ export class MovieService {
       relations: ['detail', 'director'],
     });
 
-    return newMovie;
+    newMovie.genres = newGenres;
+
+    await this.movieRepository.save(newMovie);
+
+    return this.movieRepository.findOne({
+      where: { id },
+      relations: ['detail', 'director', 'genres'],
+    });
   }
 
   async delete(id: number) {
