@@ -29,7 +29,7 @@ export class Movie extends BaseTable {
 
   @ManyToMany(() => Genre, (genre) => genre.movies)
   @JoinTable()
-  genre: Genre[];
+  genres: Genre[];
 
   @OneToOne(() => MovieDetail, (movieDetail) => movieDetail.movie, {
     cascade: true,

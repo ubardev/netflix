@@ -12,6 +12,6 @@ export class Genre extends BaseTable {
   })
   name: string;
 
-  @ManyToMany(() => Movie, (movie) => movie.genre)
+  @ManyToMany(() => Movie, (movie) => movie.genres)
   movies: Movie[];
 }
