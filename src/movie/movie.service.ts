@@ -20,29 +20,46 @@ export class MovieService {
     private readonly genreRepository: Repository<Genre>,
   ) {}
 
-  findAll(title?: string) {
-    // 나중에 title 필터 기능 추가하기
-    if (!title) {
-      return this.movieRepository.find({ relations: ['director', 'genres'] });
+  async findAll(title?: string) {
+    const qb = await this.movieRepository
+      .createQueryBuilder('movie')
+      .leftJoinAndSelect('movie.director', 'director')
+      .leftJoinAndSelect('movie.genres', 'genres');
+
+    if (title) {
+      qb.where('movie.title like :title', { title: `%${title}%` });
     }
 
-    return this.movieRepository.findAndCount({
-      where: { title: Like(`%${title}%`) },
-      relations: ['director', 'genres'],
-    });
+    return await qb.getManyAndCount();
+    //   // 나중에 title 필터 기능 추가하기
+    //   if (!title) {
+    //     return this.movieRepository.find({ relations: ['director', 'genres'] });
+    //   }
+    //   return this.movieRepository.findAndCount({
+    //     where: { title: Like(`%${title}%`) },
+    //     relations: ['director', 'genres'],
+    //   });
   }
 
   async findOne(id: number) {
-    const movie = await this.movieRepository.findOne({
-      where: { id },
-      relations: ['detail', 'director', 'genres'],
-    });
-
-    if (!movie) {
-      throw new NotFoundException('존재하지 않는 ID 값의 영화입니다!');
-    }
+    const movie = await this.movieRepository
+      .createQueryBuilder('movie')
+      .leftJoinAndSelect('movie.director', 'director')
+      .leftJoinAndSelect('movie.genres', 'genres')
+      .leftJoinAndSelect('movie.detail', 'detail')
+      .where('movie.id = :id', { id })
+      .getOne();
 
     return movie;
+
+    // const movie = await this.movieRepository.findOne({
+    //   where: { id },
+    //   relations: ['detail', 'director', 'genres'],
+    // });
+    // if (!movie) {
+    //   throw new NotFoundException('존재하지 않는 ID 값의 영화입니다!');
+    // }
+    // return movie;
   }
 
   async create(createMovieDto: CreateMovieDto) {
