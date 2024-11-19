@@ -1,10 +1,5 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateGenreDto } from './create-genre.dto';
+import { PartialType } from '@nestjs/mapped-types';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { CreateGenreDto } from './create-genre.dto';
 
-export class UpdateGenreDto {
-  @IsNotEmpty()
-  @IsString()
-  @IsOptional()
-  name?: string;
-}
+export class UpdateGenreDto extends PartialType(CreateGenreDto) {}
