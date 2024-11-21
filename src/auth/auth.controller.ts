@@ -10,4 +10,10 @@ export class AuthController {
   registerUser(@Headers('authorization') token: string) {
     return this.authService.register(token);
   }
+
+  @Post('login')
+  /// authrization: Basic $token
+  loginUser(@Headers('authorization') token: string) {
+    return this.authService.login(token);
+  }
 }
