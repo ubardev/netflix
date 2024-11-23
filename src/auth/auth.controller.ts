@@ -7,21 +7,22 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthGuard } from '@nestjs/passport';
 import { LocalAuthGuard } from './strategy/local.strategy';
 import { JwtAuthGuard } from './strategy/jwt.strategy';
-import { access } from 'fs';
+import { Public } from 'src/auth/decorator/public.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post('register')
   /// authrization: Basic $token
   registerUser(@Headers('authorization') token: string) {
     return this.authService.register(token);
   }
 
+  @Public()
   @Post('login')
   /// authrization: Basic $token
   loginUser(@Headers('authorization') token: string) {
