@@ -23,9 +23,41 @@ export class CommonService {
     qb: SelectQueryBuilder<T>,
     dto: CursorPaginationDto,
   ) {
-    const { cursor, take, order } = dto;
+    let { cursor, take, order } = dto;
 
     if (cursor) {
+      const decodedCursor = Buffer.from(cursor, 'base64').toString('utf-8');
+
+      /**
+       * {
+       *   values: {
+       *     id: 27
+       *   },
+       *   order: ['id_DESC']
+       * }
+       */
+      const cursorObj = JSON.parse(decodedCursor);
+
+      order = cursorObj.order;
+
+      const { values } = cursorObj;
+
+      /// WHERE (column1 > value1)
+      /// OR      (column1 = value1 AND column2 < value2)
+      /// OR      (column1 = value1 AND column2 < value2 AND column3 > value3)
+      /// (column1, column2, column3) > (value1, value2, value3)
+
+      const columns = Object.keys(values);
+      const comparisonOperator = order.some((o) => o.endsWith('DESC'))
+        ? '<'
+        : '>';
+      const whereConditions = columns.map((c) => `${qb.alias}.${c}`).join(',');
+      const whereParams = columns.map((c) => `:${c}`).join(',');
+
+      qb.where(
+        `(${whereConditions}) ${comparisonOperator} (${whereParams})`,
+        values,
+      );
     }
 
     // ["likeCount_DESC", "id_DESC"]
