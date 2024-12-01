@@ -19,7 +19,7 @@ export class CommonService {
     qb.skip(skip);
   }
 
-  applyCursorPaginationParamsToQb<T>(
+  async applyCursorPaginationParamsToQb<T>(
     qb: SelectQueryBuilder<T>,
     dto: CursorPaginationDto,
   ) {
@@ -46,5 +46,39 @@ export class CommonService {
     }
 
     qb.take(take);
+
+    const results = await qb.getMany();
+
+    const nextCursor = this.generateNextCursor(results, order);
+
+    return { qb, nextCursor };
+  }
+
+  generateNextCursor<T>(results: T[], order: string[]): string | null {
+    if (results.length === 0) return null;
+
+    /**
+     * {
+     *   values: {
+     *     id: 27
+     *   },
+     *   order: ['id_DESC']
+     * }
+     */
+    const lastItem = results[results.length - 1];
+
+    const values = {};
+
+    order.forEach((columnOrder) => {
+      const [column] = columnOrder.split('_');
+      values[column] = lastItem[column];
+    });
+
+    const cursorObj = { values, order };
+    const nextCursor = Buffer.from(JSON.stringify(cursorObj)).toString(
+      'base64',
+    );
+
+    return nextCursor;
   }
 }
