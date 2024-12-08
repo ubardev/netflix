@@ -19,8 +19,6 @@ export class RBACGuard implements CanActivate {
 
     const user = request.user;
 
-    console.log('user ==========>', user);
-
     if (!user) {
       return false;
     }

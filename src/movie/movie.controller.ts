@@ -78,7 +78,7 @@ export class MovieController {
     @UploadedFile()
     movie: Express.Multer.File,
   ) {
-    return this.movieService.create(body, req.queryRunner);
+    return this.movieService.create(body, movie.filename, req.queryRunner);
   }
 
   @Patch(':id')
