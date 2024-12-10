@@ -10,30 +10,20 @@ import {
   Post,
   Query,
   UseInterceptors,
-  Request,
-  UseGuards,
-  UploadedFile,
-  UploadedFiles,
-  BadRequestException,
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
-import { MovieTitleValidationPipe } from './pipe/movie-title-validation.pipe';
-import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { Public } from 'src/auth/decorator/public.decorator';
 import { RBAC } from 'src/auth/decorator/rbac.decorator';
 import { Role } from 'src/user/entities/user.entity';
 import { GetMoviesDto } from './dto/get-movies.dto';
 import { CacheInterceptor } from 'src/common/intercepter/cache.interceptor';
 import { TransactionInterceptor } from 'src/common/intercepter/transaction.interceptor';
-import {
-  FileFieldsInterceptor,
-  FileInterceptor,
-  FilesInterceptor,
-} from '@nestjs/platform-express';
 import { MovieFilePipe } from './pipe/movie-file.pipe';
 import { UserId } from 'src/user/decorator/user-id.decorator';
+import { QueryRunner } from 'src/common/decorator/query-runner.decorator';
+import { QueryRunner as QR } from 'typeorm';
 
 @Controller('movie')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -58,10 +48,10 @@ export class MovieController {
   @UseInterceptors(TransactionInterceptor)
   postMovie(
     @Body() body: CreateMovieDto,
-    @Request() req,
+    @QueryRunner() queryRunner: QR,
     @UserId() userId: number,
   ) {
-    return this.movieService.create(body, userId, req.queryRunner);
+    return this.movieService.create(body, userId, queryRunner);
   }
 
   @Patch(':id')
