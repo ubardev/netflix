@@ -1,4 +1,5 @@
 import {
+  Column,
   Entity,
   ManyToOne,
   PrimaryColumn,
@@ -22,4 +23,7 @@ export class MovieUserLike {
   })
   @ManyToOne(() => User, (user) => user.likedMovies)
   user: User;
+
+  @Column()
+  isLike: boolean;
 }
