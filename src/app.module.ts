@@ -76,7 +76,7 @@ import { MovieUserLike } from './movie/entity/movie-user-like.entity';
     { provide: APP_GUARD, useClass: RBACGuard },
     { provide: APP_INTERCEPTOR, useClass: ResponseTimeInterceptor },
     { provide: APP_FILTER, useClass: ForbiddenExceptionFilter },
-    { provide: APP_FILTER, useClass: QueryFailedExceptionFilter },
+    // { provide: APP_FILTER, useClass: QueryFailedExceptionFilter },
   ],
 })
 export class AppModule implements NestModule {
