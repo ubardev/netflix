@@ -21,7 +21,7 @@ export class MovieUserLike {
     name: 'userId',
     type: 'int8',
   })
-  @ManyToOne(() => User, (user) => user.likedMovies, , { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.likedMovies, { onDelete: 'CASCADE' })
   user: User;
 
   @Column()

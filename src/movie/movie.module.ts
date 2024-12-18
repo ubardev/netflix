@@ -7,12 +7,9 @@ import { MovieDetail } from './entity/movie-detail.entity';
 import { Director } from 'src/director/entity/director.entity';
 import { Genre } from 'src/genre/entity/genre.entity';
 import { CommonModule } from 'src/common/common.module';
-import { MulterModule } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { join } from 'path';
-import { v4 } from 'uuid';
 import { MovieUserLike } from './entity/movie-user-like.entity';
 import { User } from 'src/user/entities/user.entity';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -25,6 +22,10 @@ import { User } from 'src/user/entities/user.entity';
       User,
     ]),
     CommonModule,
+    CacheModule.register({
+      ttl: 5, // seconds
+      max: 100, // maximum number of items in cache
+    }),
     // MulterModule.register({
     //   storage: diskStorage({
     //     /// ......./Netflix/public/movie

@@ -37,6 +37,15 @@ export class MovieService {
     private readonly commonService: CommonService,
   ) {}
 
+  async findRecent() {
+    return this.movieRepository.find({
+      order: {
+        createdAt: 'DESC',
+      },
+      take: 10,
+    });
+  }
+
   async findAll(dto: GetMoviesDto, userId?: number) {
     const { title } = dto;
 
