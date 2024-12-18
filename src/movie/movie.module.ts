@@ -23,8 +23,7 @@ import { CacheModule } from '@nestjs/cache-manager';
     ]),
     CommonModule,
     CacheModule.register({
-      ttl: 5, // seconds
-      max: 100, // maximum number of items in cache
+      ttl: 3000,
     }),
     // MulterModule.register({
     //   storage: diskStorage({
