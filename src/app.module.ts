@@ -4,8 +4,6 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { MovieModule } from './movie/movie.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -30,6 +28,7 @@ import { QueryFailedExceptionFilter } from './common/filter/query-failed.filter'
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { MovieUserLike } from './movie/entity/movie-user-like.entity';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -63,7 +62,11 @@ import { MovieUserLike } from './movie/entity/movie-user-like.entity';
     }),
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'public'),
-      serveRoot: '/public',
+      serveRoot: '/public/',
+    }),
+    CacheModule.register({
+      ttl: 0,
+      isGlobal: true,
     }),
     MovieModule,
     DirectorModule,
