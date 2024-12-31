@@ -32,21 +32,7 @@ import {
 } from '@nestjs/cache-manager';
 import { Throttle } from 'src/common/decorator/throttle.decorator';
 
-@Controller({
-  path: 'movie',
-  version: '2',
-})
-export class MovieControllerV2 {
-  @Get()
-  getMovies() {
-    return [];
-  }
-}
-
-@Controller({
-  path: 'movie',
-  version: ['1', '3'],
-})
+@Controller('movie')
 @UseInterceptors(ClassSerializerInterceptor)
 export class MovieController {
   constructor(private readonly movieService: MovieService) {}
@@ -54,7 +40,6 @@ export class MovieController {
   @Get()
   @Public()
   @Throttle({ count: 5, unit: 'minute' })
-  @Version('5')
   @UseInterceptors(CacheInterceptor)
   getMovies(@Query() dto: GetMoviesDto, @UserId() userId?: number) {
     return this.movieService.findAll(dto, userId);
