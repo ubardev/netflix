@@ -16,6 +16,8 @@ async function bootstrap() {
     .setTitle('코드팩토리 넷플릭스')
     .setDescription('코드팩토리 NestJS 강의')
     .setVersion('1.0')
+    .addBasicAuth()
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -33,7 +35,11 @@ async function bootstrap() {
     }),
   );
 
-  SwaggerModule.setup('/docs', app, document);
+  SwaggerModule.setup('/docs', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  });
 
   await app.listen(8002);
 }
