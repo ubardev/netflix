@@ -11,11 +11,12 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './strategy/local.strategy';
 import { JwtAuthGuard } from './strategy/jwt.strategy';
 import { Public } from 'src/auth/decorator/public.decorator';
-import { ApiBasicAuth, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBasicAuth, ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Authorization } from './decorator/authorization.decorator';
 
 @Controller('auth')
 @ApiBearerAuth()
+@ApiTags('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
