@@ -56,6 +56,10 @@ export class MovieController {
     status: 200,
     description: '성공적으로 API Pagination을 실행 했을때!',
   })
+  @ApiResponse({
+    status: 400,
+    description: 'Pagination 데이터를 잘못 입력 했을때',
+  })
   getMovies(@Query() dto: GetMoviesDto, @UserId() userId?: number) {
     return this.movieService.findAll(dto, userId);
   }
