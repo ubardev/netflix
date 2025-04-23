@@ -59,6 +59,9 @@ import * as winston from 'winston';
         database: configService.get<string>(envVariableKeys.dbDatabase),
         entities: [Movie, MovieDetail, MovieUserLike, Director, Genre, User],
         synchronize: true,
+        ssl: {
+          rejectUnauthorized: false,
+        },
       }),
       inject: [ConfigService],
     }),
